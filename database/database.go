@@ -1,10 +1,9 @@
 package database
 
 import (
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/gorm"
 )
 
 var (
-	DBCon *gorm.DB
+	DB *gorm.DB
 )
