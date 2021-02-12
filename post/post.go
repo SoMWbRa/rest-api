@@ -14,6 +14,10 @@ type Post struct {
 	Body   string `json:"body" xml:"body"`
 }
 
+// GetPosts godoc
+// @Summary return list of posts
+// @Tags Posts
+// @Router /api/v1/post [get]
 func GetPosts(c echo.Context) error {
 	db := database.DB
 	var posts []Post
@@ -28,6 +32,10 @@ func GetPosts(c echo.Context) error {
 	}
 }
 
+// GetPost godoc
+// @Summary  return post
+// @Tags Posts
+// @Router /api/v1/post/{id} [get]
 func GetPost(c echo.Context) error {
 	id := c.Param("id")
 	db := database.DB
@@ -43,6 +51,10 @@ func GetPost(c echo.Context) error {
 	}
 }
 
+// AddPost godoc
+// @Summary add post
+// @Tags Posts
+// @Router /api/v1/post/{id} [post]
 func AddPost(c echo.Context) error {
 	db := database.DB
 	var post Post
@@ -53,6 +65,34 @@ func AddPost(c echo.Context) error {
 	return c.JSONPretty(http.StatusCreated, &post, " ")
 }
 
+// PutPost godoc
+// @Summary update user_id , title , body
+// @Tags Posts
+// @Router /api/v1/post/{id} [put]
+func PutPost(c echo.Context) error {
+	db := database.DB
+	id := c.Param("id")
+	var put Post
+	err := c.Bind(&put)
+	if err != nil {
+		return err
+	}
+	var old Post
+	db.First(&old, id)
+
+	db.Model(&old).Update("user_id", put.UserId)
+	db.Model(&old).Update("title", put.Title)
+	db.Model(&old).Update("body", put.Body)
+
+	db.First(&put, id)
+	return c.JSONPretty(http.StatusOK, &put, " ")
+}
+
+// DeletePost godoc
+// @Summary delete post
+// @Tags Posts
+// @Produce  json
+// @Router /api/v1/post/{id} [delete]
 func DeletePost(c echo.Context) error {
 	id := c.Param("id")
 	db := database.DB

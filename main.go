@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/SoMWbRa/rest-api/database"
+	_ "github.com/SoMWbRa/rest-api/docs"
 	"github.com/SoMWbRa/rest-api/post"
 	"github.com/labstack/echo"
+	"github.com/swaggo/echo-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -25,15 +27,22 @@ func initDatabase() {
 	fmt.Println("Database Migrated")
 	database.DB = db
 }
+
+// @title REST API ECHO
 func main() {
 	e := echo.New()
 
 	initDatabase()
 
-	e.GET("/api/v1/post", post.GetPosts)
-	e.GET("/api/v1/post/:id", post.GetPost)
-	e.POST("/api/v1/post", post.AddPost)
-	e.DELETE("/api/v1/post/:id", post.DeletePost)
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
+	v1 := e.Group("/api/v1")
+	{
+		v1.GET("/post", post.GetPosts)
+		v1.GET("/post/:id", post.GetPost)
+		v1.POST("/post", post.AddPost)
+		v1.PUT("/post/:id", post.PutPost)
+		v1.DELETE("/post/:id", post.DeletePost)
+	}
 	e.Logger.Fatal(e.Start(":3000"))
 }
