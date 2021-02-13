@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/SoMWbRa/rest-api/database"
 	_ "github.com/SoMWbRa/rest-api/docs"
+	"github.com/SoMWbRa/rest-api/oauth"
 	"github.com/SoMWbRa/rest-api/post"
 	"github.com/labstack/echo"
 	"github.com/swaggo/echo-swagger"
@@ -20,7 +21,7 @@ func initDatabase() {
 
 	fmt.Println("Database connection successfully opened")
 
-	err = db.AutoMigrate(&post.Post{})
+	err = db.AutoMigrate(&post.Post{}, &oauth.User{})
 	if err != nil {
 		panic("failed to migrated")
 	}
@@ -44,5 +45,9 @@ func main() {
 		v1.PUT("/post/:id", post.PutPost)
 		v1.DELETE("/post/:id", post.DeletePost)
 	}
+
+	e.POST("/user/register", oauth.CreateUser)
+	e.POST("/user/login", oauth.GetUser)
+
 	e.Logger.Fatal(e.Start(":3000"))
 }
