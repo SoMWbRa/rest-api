@@ -12,9 +12,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func initDatabase() {
+func initDatabase(base string) {
 	var err error
-	db, err := gorm.Open(sqlite.Open("data.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(base), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -33,7 +33,7 @@ func initDatabase() {
 func main() {
 	e := echo.New()
 
-	initDatabase()
+	initDatabase("test.db")
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
