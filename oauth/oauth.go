@@ -24,7 +24,7 @@ func CreateUser(c echo.Context) error {
 	}
 	db := database.DB
 	db.Create(&user)
-	return c.JSONPretty(http.StatusCreated, &user, " ")
+	return c.JSON(http.StatusCreated, &user)
 }
 
 // GetUser godoc
@@ -43,5 +43,5 @@ func GetUser(c echo.Context) error {
 	if userFind.Password != user.Password || userFind.Email == "" {
 		return c.String(http.StatusBadRequest, "invalid email or password")
 	}
-	return c.JSONPretty(http.StatusOK, &userFind, " ")
+	return c.JSON(http.StatusOK, &userFind)
 }

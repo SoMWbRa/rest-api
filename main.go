@@ -1,53 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"github.com/SoMWbRa/rest-api/database"
 	_ "github.com/SoMWbRa/rest-api/docs"
-	"github.com/SoMWbRa/rest-api/oauth"
-	"github.com/SoMWbRa/rest-api/post"
-	"github.com/labstack/echo"
-	"github.com/swaggo/echo-swagger"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/SoMWbRa/rest-api/server"
+	"log"
 )
-
-func initDatabase(base string) {
-	var err error
-	db, err := gorm.Open(sqlite.Open(base), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
-
-	fmt.Println("Database connection successfully opened")
-
-	err = db.AutoMigrate(&post.Post{}, &oauth.User{})
-	if err != nil {
-		panic("failed to migrated")
-	}
-	fmt.Println("Database Migrated")
-	database.DB = db
-}
 
 // @title REST API ECHO
 func main() {
-	e := echo.New()
 
-	initDatabase("test.db")
-
-	e.GET("/swagger/*", echoSwagger.WrapHandler)
-
-	v1 := e.Group("/api/v1")
-	{
-		v1.GET("/post", post.GetPosts)
-		v1.GET("/post/:id", post.GetPost)
-		v1.POST("/post", post.AddPost)
-		v1.PUT("/post/:id", post.PutPost)
-		v1.DELETE("/post/:id", post.DeletePost)
+	err := server.InitDatabase("data.db")
+	if err != nil {
+		log.Fatalln(err)
 	}
-
-	e.POST("/user/register", oauth.CreateUser)
-	e.POST("/user/login", oauth.GetUser)
-
+	e := server.InitiateServer()
 	e.Logger.Fatal(e.Start(":3000"))
 }

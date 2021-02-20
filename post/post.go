@@ -24,9 +24,9 @@ func GetPosts(c echo.Context) error {
 	db.Find(&posts)
 	data := c.QueryParam("data")
 	if data == "json" {
-		return c.JSONPretty(http.StatusOK, &posts, " ")
+		return c.JSON(http.StatusOK, &posts)
 	} else if data == "xml" {
-		return c.XMLPretty(http.StatusOK, &posts, " ")
+		return c.XML(http.StatusOK, &posts)
 	} else {
 		return c.String(http.StatusBadRequest, "Select output format")
 	}
@@ -43,9 +43,9 @@ func GetPost(c echo.Context) error {
 	db.Find(&post, id)
 	data := c.QueryParam("data")
 	if data == "json" {
-		return c.JSONPretty(http.StatusOK, &post, " ")
+		return c.JSON(http.StatusOK, &post)
 	} else if data == "xml" {
-		return c.XMLPretty(http.StatusOK, &post, " ")
+		return c.XML(http.StatusOK, &post)
 	} else {
 		return c.String(http.StatusBadRequest, "Select output format")
 	}
@@ -62,7 +62,7 @@ func AddPost(c echo.Context) error {
 		return err
 	}
 	db.Create(&post)
-	return c.JSONPretty(http.StatusCreated, &post, " ")
+	return c.JSON(http.StatusCreated, &post)
 }
 
 // PutPost godoc
@@ -85,7 +85,7 @@ func PutPost(c echo.Context) error {
 	db.Model(&old).Update("body", put.Body)
 
 	db.First(&put, id)
-	return c.JSONPretty(http.StatusOK, &put, " ")
+	return c.JSON(http.StatusOK, &put)
 }
 
 // DeletePost godoc
