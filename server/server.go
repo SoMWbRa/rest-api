@@ -25,6 +25,10 @@ func InitiateServer() *echo.Echo {
 
 	e.POST("/user/register", oauth.CreateUser)
 	e.POST("/user/login", oauth.GetUser)
+
+	e.File("/", "login.html")
+	e.GET("/login", oauth.HandleGoogleLogin)
+	e.GET("/profile", oauth.HandleGoogleCallback)
 	return e
 }
 func InitDatabase(base string) error {
